@@ -1,15 +1,15 @@
 namespace cadeteria;
 public class DatosRef
 {
-    string ColorCasa;
-    string Obser;
+    private string? referencia;
 
-    public DatosRef(string colorCasa, string obser)
+    public DatosRef(string? referencia)
     {
-        ColorCasa1 = colorCasa;
-        Obser1 = obser;
+        this.referencia = referencia;
+    }
+    //metodo
+    public string obtenerReferencia(){
+        return referencia;
     }
 
-    public string ColorCasa1 { get => ColorCasa; set => ColorCasa = value; }
-    public string Obser1 { get => Obser; set => Obser = value; }
 }
