@@ -44,7 +44,7 @@ public class Cadete
        int totalPagar = 0;
        foreach (var pedido in listaPedido)
        {
-        if (pedido.Estado == 1)
+        if (pedido.Estado == Pedido.EstadoPedido.Entregado)
         {
             totalPagar += pagoPorPedido;
         }
