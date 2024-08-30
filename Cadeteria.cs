@@ -30,7 +30,7 @@ public class Cadeteria
         listadoCadetes.Add(cadete);
     }
     public void borrarCadetePorId(int idCadete){
-        Cadete cadeteEncontrado= null;
+        Cadete? cadeteEncontrado= null;
         foreach (var cadete in listadoCadetes)
         {
             if (cadete.Id == idCadete)
@@ -47,7 +47,7 @@ public class Cadeteria
     public void generarInforme(){
         foreach (var cadete in listadoCadetes)
         {
-            Console.WriteLine($"Cadete: {cadete.Nombre}, Pedido Entregados: {cadete.ListaPedido.Count}, Jornel: {cadete.jornalACobrar()}");W
+            Console.WriteLine($"Cadete: {cadete.Nombre}, Pedido Entregados: {cadete.ListaPedido.Count}, Jornel: {cadete.jornalACobrar()}");
         }
     }
 
