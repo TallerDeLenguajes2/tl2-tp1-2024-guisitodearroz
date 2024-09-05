@@ -1,24 +1,30 @@
 namespace cadeteria;
 class AltaPedido
 {
-    static void DarDeAltaPedidos(){
-        Console.WriteLine("Ingrese el numero del pedido: \n");
-        int numero= int.Parse(Console.ReadLine());
-        Console.WriteLine("\n ingrese observaciones: \n");
-        string observaciones= Console.ReadLine(); 
-        Console.WriteLine("\n Ingrese el nombre del Cliente: \n");
-        string nombreCliente= Console.ReadLine();
-        Console.WriteLine("\n Ingrese la direccion del Cliente\n");
-        string direccionCliente= Console.ReadLine();
-        Console.WriteLine("\n Ingrese telefono del Cliente");
-        string telefonoCliente= Console.ReadLine();
-        Cliente nuevoCliente = new Cliente(nombreCliente, direccionCliente, telefonoCliente, null);
-        Pedido nuevoPedido = new Pedido(numero, observaciones, nuevoCliente, Pedido.EstadoPedido.Pendiente);
-        AsignarPedidoCadete(nuevoPedido);
+    private static Cadeteria cadeteria;
+    public static void iniciar(Cadeteria cadeteriaExistente){
+        cadeteria= cadeteriaExistente;
     }
-    static void AsignarPedidoACadete(Pedido pedido)
+    public static void DarDeAltaPedidos()
         {
-            Cadeteria cadeteria= new Cadeteria();
+            Console.WriteLine("Ingrese el número del pedido: ");
+            int numero = int.Parse(Console.ReadLine());
+            Console.WriteLine("Ingrese observaciones: ");
+            string observaciones = Console.ReadLine();
+            Console.WriteLine("Ingrese el nombre del cliente: ");
+            string nombreCliente = Console.ReadLine();
+            Console.WriteLine("Ingrese la dirección del cliente: ");
+            string direccionCliente = Console.ReadLine();
+            Console.WriteLine("Ingrese el teléfono del cliente: ");
+            string telefonoCliente = Console.ReadLine();
+            Cliente nuevoCliente = new Cliente(nombreCliente, direccionCliente, telefonoCliente, null);
+            Pedido nuevoPedido = new Pedido(numero, observaciones, nuevoCliente, Pedido.EstadoPedido.Pendiente);
+
+            // Asignar el nuevo pedido a un cadete
+            AsignarPedidoACadete(nuevoPedido);
+        }
+        public static void AsignarPedidoACadete(Pedido pedido)
+        {
             cadeteria.mostrarCadete();
             Console.Write("Ingrese el ID del cadete: ");
             int idCadete = int.Parse(Console.ReadLine());
@@ -27,6 +33,7 @@ class AltaPedido
             if (cadeteSeleccionado != null)
             {
                 cadeteSeleccionado.AsignarPedido(pedido);
+                Console.WriteLine($"Pedido asignado al cadete {cadeteSeleccionado.Nombre}.");
             }
             else
             {
