@@ -3,22 +3,26 @@
 using cadeteria
 
 Cadeteria cadeteria= new Cadeteria("OKA", "02221111", new List<Cadete>());
+const string archivoCadetes = "cadetes.csv";
 
 AltaPedido.Iniciar(cadeteria);
-int opcion;
-do
-{
-    Console.Clear();
-    Console.WriteLine("\n---------Menu---------\n");
-    Console.WriteLine("1_Dar de alta pedidos\n");
-    Console.WriteLine("2_Asignar Pedidos\n");
-    Console.WriteLine("3_Cambiar Estado de Pedido\n");
-    Console.WriteLine("4_Reasignar Pedido a otro Cadete\n");
-    Console.WriteLine("5_Mostrar Informe\n");
-    Console.WriteLine("0_Salir.\n");
-    Console.WriteLine("Seleccione una opcion\n");
-    opcion= int.Parse(Console.ReadLine());
-    switch (opcion)
+
+            int opcion;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("=== Menu Cadetería ===");
+                Console.WriteLine("1. Dar de alta pedidos");
+                Console.WriteLine("2. Asignar pedido a cadete");
+                Console.WriteLine("3. Cambiar estado del pedido");
+                Console.WriteLine("4. Reasignar pedido a otro cadete");
+                Console.WriteLine("5. Mostrar informe");
+                Console.WriteLine("6. Generar cadetes aleatorios");
+                Console.WriteLine("0. Salir y Guardar");
+                Console.Write("Seleccione una opción: ");
+                opcion = int.Parse(Console.ReadLine());
+
+                switch (opcion)
                 {
                     case 1:
                         AltaPedido.DarDeAltaPedidos();
@@ -35,16 +39,31 @@ do
                     case 5:
                         cadeteria.GenerarInforme();
                         break;
+                    case 6:
+                        GenerarCadetesAleatorios();
+                        break;
                     case 0:
-                        Console.WriteLine("Saliendo del sistema...");
+                        // Guardar cadetes en el archivo CSV
+                        cadeteria.GuardarCadetesEnCSV(archivoCadetes);
+                        Console.WriteLine("Datos guardados y saliendo del sistema...");
                         break;
                     default:
                         Console.WriteLine("Opción inválida.");
                         break;
                 }
-                if (opcion!=0)
+
+                if (opcion != 0)
                 {
-                    Console.WriteLine("\nPresione Cualquier Boton para continuar");
+                    Console.WriteLine("\nPresione cualquier tecla para continuar...");
                     Console.ReadKey();
                 }
-} while (opcion !=0);
+            } while (opcion != 0);
+        }
+
+        // Método para generar cadetes aleatorios
+        static void GenerarCadetesAleatorios()
+        {
+            Console.Write("¿Cuántos cadetes desea generar? ");
+            int cantidad = int.Parse(Console.ReadLine());
+            cadeteria.GenerarCadetesAleatorios(cantidad);
+        }
