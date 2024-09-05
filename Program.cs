@@ -1,6 +1,4 @@
-﻿using Cadeteria;
-
-using cadeteria
+﻿using negocio;
 
 Cadeteria cadeteria= new Cadeteria("OKA", "02221111", new List<Cadete>());
 const string archivoCadetes = "cadetes.csv";
@@ -58,7 +56,7 @@ AltaPedido.Iniciar(cadeteria);
                     Console.ReadKey();
                 }
             } while (opcion != 0);
-        }
+        
 
         // Método para generar cadetes aleatorios
         static void GenerarCadetesAleatorios()

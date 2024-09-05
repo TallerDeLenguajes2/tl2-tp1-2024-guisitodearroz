@@ -1,4 +1,4 @@
-namespace cadeteria;
+namespace negocio;
 public class Pedido
 {
     private int numero;

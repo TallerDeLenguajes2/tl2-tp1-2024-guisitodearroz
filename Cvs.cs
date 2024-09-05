@@ -1,4 +1,4 @@
-namespace cadeteria;
+namespace negocio;
 class Cvs
 {
      public static List<Cadete> CargarCadetesDesdeCSV(string archivoCadetes)

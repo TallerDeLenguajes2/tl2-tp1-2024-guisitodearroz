@@ -1,4 +1,4 @@
-namespace cadeteria;
+namespace negocio;
 public class Cadete
 {
     private int id;
@@ -54,6 +54,7 @@ public class Cadete
     }
      public void GenerarCadetesAleatorios(int cantidad)
         {
+            Random random= new Random();
             for (int i = 0; i < cantidad; i++)
             {
                 int id = random.Next(1, 1000);

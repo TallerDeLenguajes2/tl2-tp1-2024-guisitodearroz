@@ -1,4 +1,4 @@
-namespace cadeteria;
+namespace negocio;
 public class Cliente
 {
     private string nombre;

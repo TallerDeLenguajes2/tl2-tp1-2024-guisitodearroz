@@ -1,4 +1,4 @@
-namespace Cadeteria
+namespace Cadeteria;
     class AltaPedido
     {
         private static Cadeteria cadeteria;
