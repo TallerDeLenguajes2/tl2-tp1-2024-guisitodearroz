@@ -39,7 +39,7 @@ public class Cadete
     }
     //metodos
 
-    public int jornalACobrar(){
+    public int JornalACobrar(){
        const int pagoPorPedido= 500;
        int totalPagar = 0;
        foreach (var pedido in listaPedido)
@@ -50,5 +50,20 @@ public class Cadete
         }
        }
        return totalPagar;
+    }
+    public void AsignarPedidos(Pedido pedido){
+        listaPedido.Add(pedido);
+        Console.WriteLine($"Pedido {pedido.Numero} asignado a {nombre}");
+    }
+    public void MostrarPedidos(){
+        Console.WriteLine($"\n--------Pedidos del cadete {nombre}--------");
+        foreach (var pedido in listaPedido)
+        {
+            Console.WriteLine($"Numero: {pedido.Numero}, Estado: {pedido.Estado}");
+        }
+    }
+    public void CambiarCadete(Pedido pedido, Cadete nuevoCadete){
+        listaPedido.Remove(pedido);
+        nuevoCadete.AsignarPedidos(pedido);
     }
 }

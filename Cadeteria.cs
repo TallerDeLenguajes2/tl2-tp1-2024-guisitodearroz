@@ -44,25 +44,17 @@ public class Cadeteria
             listadoCadetes.Remove(cadeteEncontrado);
         }
     }
+    public void mostrarCadete(){
+        Console.WriteLine("-------Lista de cadetes-------");
+        foreach (var cadete in listadoCadetes)
+        {
+            Console.WriteLine($"ID:{cadete.Id}, Nombre: {cadete.Nombre}");
+        }
+    }
     public void generarInforme(){
         foreach (var cadete in listadoCadetes)
         {
             Console.WriteLine($"Cadete: {cadete.Nombre}, Pedido Entregados: {cadete.ListaPedido.Count}, Jornel: {cadete.jornalACobrar()}");
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

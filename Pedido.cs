@@ -13,17 +13,9 @@ public class Pedido
         this.Cliente = cliente;
         this.Estado = estado;
     }
-    public int Numero{
+    public int Numero { 
         get => numero;
-        set{
-            if (value > 0)
-            {
-                numero= value;      
-            }else
-            {
-                Console.WriteLine("El numero debe ser positivo");
-            }
-        } 
+        set => numero = value; 
     }
     public string? Observaciones{
             get => observaciones;
@@ -49,6 +41,10 @@ public class Pedido
         public string verDatosCliente(){
             string datos= $"Nombre: {cliente.Nombre} , Telefono: {cliente.Telefono} , Direccion : {cliente.Direccion}";
             return datos;
+        }
+        public void CambiarEstadoPedido(EstadoPedido nuevoEstado){
+            this.Estado= nuevoEstado;
+            Console.WriteLine($"El estado del pedido {numero} a sido cambiado a {estado}");
         }
         //enum estados
         public enum EstadoPedido
