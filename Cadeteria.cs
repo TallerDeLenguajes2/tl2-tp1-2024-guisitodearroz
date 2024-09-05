@@ -1,94 +1,117 @@
-namespace negocio;
-public class Cadeteria
+
+using System.Linq;
+namespace EspacioCadeteria
 {
-    private string nombre;
-    private string telefono;
-    private List<Cadete> listadoCadetes;
-    
-    public Cadeteria(string nombre, string telefono, List<Cadete>? listadoCadetes = null)
+    public class Cadeteria
     {
-        this.nombre = nombre;
-        this.telefono = telefono;
-        this.listadoCadetes = listadoCadetes ?? new List<Cadete>();
-    }   
+        private string nombre;
+        private string telefono;
+        private List<Cadete> cadetes;
 
-    //geter u setter
-    public string Nombre{
-        get => nombre;
-        set => nombre= value;
-    }
-    public string Telefono{
-        get => telefono;
-        set => telefono= value;
-    }
-    public List<Cadete> ListadoCadetes{
-        get => listadoCadetes;
-        set => listadoCadetes= value;
-    }
-
-    //metodos
-    public void GenerarCadetesAleatorios(int cantidad)
-{
-    Random random = new Random();
-    for (int i = 0; i < cantidad; i++)
-    {
-        int id = random.Next(1, 1000);
-        string nombre = $"Cadete{id}";
-        string direccion = $"Calle {random.Next(1, 100)}";
-        string telefono = $"123456{random.Next(100, 999)}";
-
-        Cadete nuevoCadete = new Cadete(id, nombre, direccion, telefono, new List<Pedido>());
-        listadoCadetes.Add(nuevoCadete);
-    }
-    Console.WriteLine($"{cantidad} cadetes generados aleatoriamente.");
-}
-    public void GuardarCadetesEnCSV(string archivoCadetes)
+        public Cadeteria(string nombre, string telefono, List<Cadete> Cadetes)
         {
-            try
+            this.nombre = nombre;
+            this.telefono = telefono;
+            this.cadetes = Cadetes;
+        }
+
+        public string Nombre { get => nombre; set => nombre = value; }
+        public string Telefono { get => telefono; set => telefono = value; }
+        public List<Cadete> Cadetes { get => cadetes; set => cadetes = value; }
+
+        public Pedido DarDeAltaPedido(string nro, string obs, string nombre_Cli, string direccion_Cli, string telefono_Cli, string datosRefDireccion_Cli, Estado estado)
+        {
+            Pedido Pedido = new Pedido(nro, obs, nombre_Cli, direccion_Cli, telefono_Cli, datosRefDireccion_Cli, estado);
+            return Pedido;
+        }
+
+        public Cadete CadeteConMenosPedidos(List<Cadete> Cadetes)
+        {
+            Cadete cadeteConMenosPedidos = Cadetes.MinBy(cadete => cadete.Pedidos.Count);
+            if (cadeteConMenosPedidos != null)
             {
-                using (StreamWriter sw = new StreamWriter(archivoCadetes))
-                {
-                    foreach (Cadete cadete in listadoCadetes)
-                    {
-                        string linea = $"{cadete.Id},{cadete.Nombre},{cadete.Direccion},{cadete.Telefono}";
-                        sw.WriteLine(linea);
-                    }
-                }
-                Console.WriteLine("Datos de cadetes guardados con éxito en el CSV.");
+                Console.WriteLine($"El cadete con menos pedidos es {cadeteConMenosPedidos.Nombre} con {cadeteConMenosPedidos.Pedidos.Count} pedidos.");
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine("Error al guardar el archivo CSV: " + e.Message);
+                Console.WriteLine("No hay cadetes disponibles.");
+            }
+            return cadeteConMenosPedidos;
+        }
+        
+        public Cadete AsignarPedidoCadete(Pedido pedido, List<Cadete> cadetes)
+        {
+            pedido.EstadoPedido = Estado.Enviado;
+            Cadete cadete = CadeteConMenosPedidos(cadetes);
+            cadete.Pedidos.Add(pedido);
+            return cadete;
+        }
+        
+
+
+
+        public double PagoDeCadete(Cadete cadete)
+        {
+            return cadete.Pedidos.Count * 500;
+        }
+
+        public void MostrarCadeteria(){
+            System.Console.WriteLine("\n\nDatos de cadeteria:");
+            System.Console.WriteLine("Nombre: "+Nombre);
+            System.Console.WriteLine("Telefono: "+telefono);
+            System.Console.WriteLine("Lista de cadetes: ");
+            foreach (var cadete in cadetes)
+            {
+                cadete.MostrarCadete();
             }
         }
-    public void CargarCadete(Cadete cadete){
-        listadoCadetes.Add(cadete);
-    }
-    public void BorrarCadetePorId(int idCadete)
-    {
-        Cadete? cadeteEncontrado = listadoCadetes.FirstOrDefault(c => c.Id == idCadete);
-        if (cadeteEncontrado != null)
-        {
-            listadoCadetes.Remove(cadeteEncontrado);
-            Console.WriteLine($"Cadete con ID {idCadete} eliminado.");
-        }
-        else
-        {
-            Console.WriteLine($"Cadete con ID {idCadete} no encontrado.");
-        }
-    }
 
-    public void MostrarCadete(){
-        Console.WriteLine("-------Lista de cadetes-------");
-        foreach (var cadete in listadoCadetes)
+    public Pedido cambioDeEstadoDePedido(Pedido pedido){
+    bool continuar = true;
+    do
+    {   
+        System.Console.WriteLine("\nEstado actual del pedido?");
+        Console.WriteLine("1. Entregado");
+        Console.WriteLine("2. Enviado");
+        Console.WriteLine("3. Rechazado");
+        Console.WriteLine("4. Pendiente");
+        Console.WriteLine("5. Salir");
+        Console.Write("Seleccione estado: ");
+
+        int opcion = Convert.ToInt32(Console.ReadLine());
+
+        switch (opcion)
         {
-            Console.WriteLine($"ID:{cadete.Id}, Nombre: {cadete.Nombre}");
+            case 1:
+                pedido.EstadoPedido = Estado.Entregado;
+                Console.WriteLine("Estado cambiado a Entregado.");
+                break;
+            case 2:
+                pedido.EstadoPedido= Estado.Enviado;
+                Console.WriteLine("Estado cambiado a Enviado.");
+                break;
+            case 3:
+                pedido.EstadoPedido = Estado.Rechazado;
+                Console.WriteLine("Estado cambiado a Rechazado.");
+                break;
+            case 4:
+                pedido.EstadoPedido = Estado.Pendiente;
+                Console.WriteLine("Estado cambiado a Pendiente.");
+                break;
+            case 5:
+                continuar = false;
+                Console.WriteLine("Saliendo del cambio de estado.");
+                break;
+            default:
+                Console.WriteLine("Opción inválida. Por favor, intente de nuevo.");
+                break;
         }
-    }
-    public void GenerarInforme(){
-        foreach (var cadete in listadoCadetes)
-        {
-            Console.WriteLine($"Cadete: {cadete.Nombre}, Pedido Entregados: {cadete.ListaPedido.Count}, Jornel: {cadete.JornalACobrar()}");
+
+    } while (continuar);
+
+    return pedido;
+          
         }
-    }
+
+  }
 }

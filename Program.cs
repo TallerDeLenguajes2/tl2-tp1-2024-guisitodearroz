@@ -1,89 +1,94 @@
-﻿using negocio;
+﻿using EspacioCadeteria;
+using System;
+using System.Collections.Generic;
 
-Cadeteria cadeteria = new Cadeteria("OKA", "02221111", new List<Cadete>());
-const string archivoCadetes = "cadetes.csv";
-
-// Cargar cadetes desde el archivo CSV si existe
-if (File.Exists(archivoCadetes))
+class Program
 {
-    var cadetesCargados = Cvs.CargarCadetesDesdeCSV(archivoCadetes);
-    foreach (var cadete in cadetesCargados)
+    static void Main(string[] args)
     {
-        cadeteria.CargarCadete(cadete);
-    }
-}
 
-AltaPedido.Iniciar(cadeteria);
+        List<Cadete> cadetes = ManejadorDeCsv.CargaDeCadetes("Cadetes.csv");
+        Cadeteria cadeteria = ManejadorDeCsv.CargaDeCadeteria("Cadeteria.csv", cadetes);
 
-int opcion;
-do
-{
-    Console.Clear();
-    Console.WriteLine("=== Menu Cadetería ===");
-    Console.WriteLine("1. Dar de alta pedidos");
-    Console.WriteLine("2. Asignar pedido a cadete");
-    Console.WriteLine("3. Cambiar estado del pedido");
-    Console.WriteLine("4. Reasignar pedido a otro cadete");
-    Console.WriteLine("5. Mostrar informe");
-    Console.WriteLine("6. Generar cadetes aleatorios");
-    Console.WriteLine("0. Salir y Guardar");
-    Console.Write("Seleccione una opción: ");
+        cadeteria.MostrarCadeteria();
 
-    // Manejo de excepciones para entrada del usuario
-    if (!int.TryParse(Console.ReadLine(), out opcion))
-    {
-        Console.WriteLine("Entrada inválida. Por favor ingrese un número.");
-        opcion = -1; // Para asegurarse de que el menú se muestre nuevamente
-        continue;
-    }
 
-    switch (opcion)
-    {
-        case 1:
-            AltaPedido.DarDeAltaPedidos();
-            break;
-        case 2:
-            AltaPedido.AsignarPedidoACadete(null); // Reemplazar null con un valor adecuado o eliminar si no es necesario
-            break;
-        case 3:
-            AltaPedido.CambiarEstadoPedido();
-            break;
-        case 4:
-            AltaPedido.ReasignarPedido();
-            break;
-        case 5:
-            cadeteria.GenerarInforme();
-            break;
-        case 6:
-            GenerarCadetesAleatorios(cadeteria);
-            break;
-        case 0:
-            // Guardar cadetes en el archivo CSV
-            Cvs.GuardarCadetesEnCSV(archivoCadetes, cadeteria.ListadoCadetes);
-            Console.WriteLine("Datos guardados y saliendo del sistema...");
-            break;
-        default:
-            Console.WriteLine("Opción inválida.");
-            break;
-    }
 
-    if (opcion != 0)
-    {
-        Console.WriteLine("\nPresione cualquier tecla para continuar...");
-        Console.ReadKey();
-    }
-} while (opcion != 0);
+        Pedido pedido = null;
+        
+        bool continuar = true;
 
-// Método para generar cadetes aleatorios
-static void GenerarCadetesAleatorios(Cadeteria cadeteria)
-{
-    Console.Write("¿Cuántos cadetes desea generar? ");
-    if (int.TryParse(Console.ReadLine(), out int cantidad))
-    {
-        cadeteria.GenerarCadetesAleatorios(cantidad);
-    }
-    else
-    {
-        Console.WriteLine("Entrada inválida. Por favor ingrese un número.");
+        while (continuar)
+        {
+            Console.WriteLine("\n\n=== Sistema de Gestión de Pedidos ===");
+            Console.WriteLine("1. Dar de alta pedidos");
+            Console.WriteLine("2. Asignar pedidos a cadetes");
+            Console.WriteLine("3. Cambiar estado de un pedido");
+            Console.WriteLine("4. Reasignar pedido a otro cadete");
+            Console.WriteLine("5. Dar de alta cadete");
+            Console.WriteLine("6. Salir");
+            Console.Write("Seleccione una opción: ");
+
+            string opcion = Console.ReadLine();
+
+            switch (opcion)
+            {
+                case "1":
+                //a) dar de alta pedidos
+                    Console.WriteLine("Dar de alta pedidos");
+                    pedido = cadeteria.DarDeAltaPedido(              
+                            "12345",                   // Número del pedido
+                            "Observaciones del pedido", // Observaciones
+                            "Juan Pérez",              // Nombre del cliente
+                            "Calle Falsa 123",         // Dirección del cliente
+                            "555-1234",                // Teléfono del cliente
+                            "Cerca de la plaza",       // Datos de referencia de la dirección del cliente
+                            Estado.Pendiente );
+
+                            pedido.VerDatosCliente();
+                            
+                    break;
+                case "2":
+                //b) asignarlos a cadetes
+                    Console.WriteLine("\nAsignar pedidos a cadetes");
+                    if(cadetes.Count!=0){
+                        if(pedido!=null){
+                            cadeteria.AsignarPedidoCadete(pedido, cadetes);
+                        } else{
+                            System.Console.WriteLine("No hay pedidos");
+                        }
+                    } else{
+                        System.Console.WriteLine("\nNo hay cadetes disponibles");
+                    }
+
+                    break;
+                case "3":
+                    Console.WriteLine("Cambiar estado de un pedido");
+                    if(pedido!=null){
+                        pedido = cadeteria.cambioDeEstadoDePedido(pedido);
+                    } else{
+                        System.Console.WriteLine("No hay pedido");
+                    }
+
+                    break;
+                case "4":
+                    Console.WriteLine("Reasignar pedido a otro cadete");
+
+                    break;
+                case "5":
+                    Console.WriteLine("Dar de alta a un cadete");
+
+                    break;
+                case "6":
+                    continuar = false;
+                    Console.WriteLine("Saliendo del sistema de gestión de pedidos.");
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Por favor, seleccione una opción del 1 al 5.");
+                    break;
+            }
+        }
+
+
     }
 }
