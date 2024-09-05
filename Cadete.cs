@@ -1,105 +1,74 @@
-namespace negocio;
-public class Cadete
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace negocio
 {
-    private int id;
-    private string nombre;
-    private string direccion;
-    private string telefono;
-    private List<Pedido> listaPedido;
-    
-    public Cadete(int id, string nombre, string direccion, string telefono, List<Pedido> listaPedido)
+    public class Cadete
     {
-        this.id= id;
-        this.nombre= nombre;
-        this.direccion= direccion;
-        this.telefono= telefono;
-        this.listaPedido = listaPedido;
-    }
+        private int id;
+        private string nombre;
+        private string direccion;
+        private string telefono;
+        private List<Pedido> listaPedido;
 
-    //get y set
-    public int Id{
-        get => id;
-        set => id= value;
-    }
-    public string Nombre{
-        get => nombre;
-        set => nombre= value;
-    }
-    public string Direccion{
-        get => direccion;
-        set => direccion= value;
-    }
-    public string Telefono{
-        get => telefono;
-        set => telefono= value;
-    }
-    public List<Pedido> ListaPedido{
-        get => listaPedido;
-        set => listaPedido= value;
-    }
-    //metodos
-
-
-    public int JornalACobrar(){
-       const int pagoPorPedido= 500;
-       int totalPagar = 0;
-       foreach (var pedido in listaPedido)
-       {
-        if (pedido.Estado == Pedido.EstadoPedido.Entregado)
+        public Cadete(int id, string nombre, string direccion, string telefono, List<Pedido> listaPedido)
         {
-            totalPagar += pagoPorPedido;
+            this.id = id;
+            this.nombre = nombre;
+            this.direccion = direccion;
+            this.telefono = telefono;
+            this.listaPedido = listaPedido;
         }
-       }
-       return totalPagar;
-    }
-     public void GenerarCadetesAleatorios(int cantidad)
-        {
-            Random random= new Random();
-            for (int i = 0; i < cantidad; i++)
-            {
-                int id = random.Next(1, 1000);
-                string nombre = $"Cadete{id}";
-                string direccion = $"Calle {random.Next(1, 100)}";
-                string telefono = $"123456{random.Next(100, 999)}";
 
-                Cadete nuevoCadete = new Cadete(id, nombre, direccion, telefono, new List<Pedido>());
-                listadoCadetes.Add(nuevoCadete);
-            }
+        // Getters y Setters
+        public int Id { get => id; set => id = value; }
+        public string Nombre { get => nombre; set => nombre = value; }
+        public string Direccion { get => direccion; set => direccion = value; }
+        public string Telefono { get => telefono; set => telefono = value; }
+        public List<Pedido> ListaPedido { get => listaPedido; set => listaPedido = value; }
 
-            Console.WriteLine($"{cantidad} cadetes generados aleatoriamente.");
-        }
-    public void GuardarCadetesEnCSV(string archivoCadetes)
+        // Métodos
+        public int JornalACobrar()
         {
-            try
+            const int pagoPorPedido = 500;
+            int totalPagar = 0;
+            foreach (var pedido in listaPedido)
             {
-                using (StreamWriter sw = new StreamWriter(archivoCadetes))
+                if (pedido.Estado == Pedido.EstadoPedido.Entregado)
                 {
-                    foreach (Cadete cadete in listadoCadetes)
-                    {
-                        string linea = $"{cadete.Id},{cadete.Nombre},{cadete.Direccion},{cadete.Telefono}";
-                        sw.WriteLine(linea);
-                    }
+                    totalPagar += pagoPorPedido;
                 }
-                Console.WriteLine("Datos de cadetes guardados con éxito en el CSV.");
             }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error al guardar el archivo CSV: " + e.Message);
-            }
+            return totalPagar;
         }
-    public void AsignarPedidos(Pedido pedido){
-        listaPedido.Add(pedido);
-        Console.WriteLine($"Pedido {pedido.Numero} asignado a {nombre}");
-    }
-    public void MostrarPedidos(){
-        Console.WriteLine($"\n--------Pedidos del cadete {nombre}--------");
-        foreach (var pedido in listaPedido)
+
+        public void AsignarPedido(Pedido pedido)
         {
-            Console.WriteLine($"Numero: {pedido.Numero}, Estado: {pedido.Estado}");
+            listaPedido.Add(pedido);
+            Console.WriteLine($"Pedido {pedido.Numero} asignado a {Nombre}");
         }
-    }
-    public void CambiarCadete(Pedido pedido, Cadete nuevoCadete){
-        listaPedido.Remove(pedido);
-        nuevoCadete.AsignarPedidos(pedido);
+
+        public void MostrarPedidos()
+        {
+            Console.WriteLine($"\n--------Pedidos del cadete {nombre}--------");
+            foreach (var pedido in listaPedido)
+            {
+                Console.WriteLine($"Numero: {pedido.Numero}, Estado: {pedido.Estado}");
+            }
+        }
+
+        public void ReasignarPedido(Pedido pedido, Cadete nuevoCadete)
+        {
+            if (listaPedido.Remove(pedido))
+            {
+                nuevoCadete.AsignarPedido(pedido);
+                Console.WriteLine($"Pedido {pedido.Numero} reasignado a {nuevoCadete.Nombre}");
+            }
+            else
+            {
+                Console.WriteLine($"Pedido {pedido.Numero} no encontrado en la lista de pedidos.");
+            }
+        }
     }
 }

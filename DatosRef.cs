@@ -1,15 +1,18 @@
-namespace negocio;
-public class DatosRef
+namespace negocio
 {
-    private string? referencia;
-
-    public DatosRef(string? referencia)
+    public class DatosRef
     {
-        this.referencia = referencia;
-    }
-    //metodo
-    public string obtenerReferencia(){
-        return referencia;
-    }
+        public string? Referencia { get; set; }
 
+        public DatosRef(string? referencia)
+        {
+            Referencia = referencia;
+        }
+
+        // Método
+        public string ObtenerReferencia()
+        {
+            return Referencia ?? "No disponible"; // Manejo de null
+        }
+    }
 }

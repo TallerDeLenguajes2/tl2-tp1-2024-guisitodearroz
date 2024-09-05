@@ -1,59 +1,67 @@
-namespace negocio;
-public class Pedido
+namespace negocio
 {
-    private int numero;
-    private string? observaciones;
-    private Cliente cliente;
-    private EstadoPedido estado;
-
-    public Pedido(int numero, string? observaciones, Cliente cliente, EstadoPedido estado)
+    public class Pedido
     {
-        this.Numero = numero;
-        this.Observaciones = observaciones;
-        this.Cliente = cliente;
-        this.Estado = estado;
-    }
-    public int Numero { 
-        get => numero;
-        set => numero = value; 
-    }
-    public string? Observaciones{
-            get => observaciones;
-            set => observaciones= value;
+        private int numero;
+        private string? observaciones;
+        private Cliente cliente;
+        private EstadoPedido estado;
+
+        public Pedido(int numero, string? observaciones, Cliente cliente, EstadoPedido estado)
+        {
+            this.Numero = numero;
+            this.Observaciones = observaciones;
+            this.Cliente = cliente;
+            this.Estado = estado;
         }
-        public string Telefono{
-            get => telefono;
-            set => telefono= value;
+
+        public int Numero 
+        { 
+            get => numero; 
+            set => numero = value; 
         }
-        public Cliente Cliente{
-            get => cliente;
-            set => cliente= value;
+
+        public string? Observaciones
+        { 
+            get => observaciones; 
+            set => observaciones = value; 
         }
+
+        public Cliente Cliente 
+        { 
+            get => cliente; 
+            set => cliente = value; 
+        }
+
         public EstadoPedido Estado 
         { 
             get => estado; 
             set => estado = value; 
         }
-        //metodos
-        public string verDireccionCliente(){
+
+        // Métodos
+        public string VerDireccionCliente()
+        {
             return cliente.Direccion;
         }
-        public string verDatosCliente(){
-            string datos= $"Nombre: {cliente.Nombre} , Telefono: {cliente.Telefono} , Direccion : {cliente.Direccion}";
-            return datos;
+
+        public string VerDatosCliente()
+        {
+            return $"Nombre: {cliente.Nombre}, Teléfono: {cliente.Telefono}, Dirección: {cliente.Direccion}";
         }
-        public void CambiarEstadoPedido(EstadoPedido nuevoEstado){
-            this.Estado= nuevoEstado;
-            Console.WriteLine($"El estado del pedido {numero} a sido cambiado a {estado}");
+
+        public void CambiarEstadoPedido(EstadoPedido nuevoEstado)
+        {
+            this.Estado = nuevoEstado;
+            Console.WriteLine($"El estado del pedido {numero} ha sido cambiado a {estado}.");
         }
-        //enum estados
+
+        // Enum estados
         public enum EstadoPedido
         {
             Pendiente,
             EnProceso,
             Entregado,
             Cancelado
-
         }
-    
-}
+    }

@@ -1,7 +1,9 @@
-namespace negocio;
-class Cvs
+namespace negocio
 {
-     public static List<Cadete> CargarCadetesDesdeCSV(string archivoCadetes)
+    class Cvs
+    {
+        // Cargar Cadetes desde un archivo CSV
+        public static List<Cadete> CargarCadetesDesdeCSV(string archivoCadetes)
         {
             List<Cadete> cadetes = new List<Cadete>();
 
@@ -13,14 +15,29 @@ class Cvs
                     while ((linea = sr.ReadLine()) != null)
                     {
                         string[] datos = linea.Split(','); // Asumimos que los datos están separados por comas
-                        int id = int.Parse(datos[0]);
-                        string nombre = datos[1];
-                        string direccion = datos[2];
-                        string telefono = datos[3];
-                        List<Pedido> pedidos = new List<Pedido>(); // Los pedidos pueden cargarse luego
 
-                        Cadete cadete = new Cadete(id, nombre, direccion, telefono, pedidos);
-                        cadetes.Add(cadete);
+                        // Verificar que hay suficientes datos en la línea
+                        if (datos.Length < 4)
+                        {
+                            Console.WriteLine("Formato de línea inválido en el archivo CSV.");
+                            continue;
+                        }
+
+                        try
+                        {
+                            int id = int.Parse(datos[0]);
+                            string nombre = datos[1];
+                            string direccion = datos[2];
+                            string telefono = datos[3];
+                            List<Pedido> pedidos = new List<Pedido>(); // Los pedidos pueden cargarse luego
+
+                            Cadete cadete = new Cadete(id, nombre, direccion, telefono, pedidos);
+                            cadetes.Add(cadete);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Error al parsear los datos en el archivo CSV.");
+                        }
                     }
                 }
             }
@@ -52,4 +69,5 @@ class Cvs
                 Console.WriteLine("Error al guardar el archivo CSV: " + e.Message);
             }
         }
+    }
 }
