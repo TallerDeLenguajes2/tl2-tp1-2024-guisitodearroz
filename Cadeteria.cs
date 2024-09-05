@@ -26,10 +26,10 @@ public class Cadeteria
     }
 
     //metodos
-    public void cargarCadete(Cadete cadete){
+    public void CargarCadete(Cadete cadete){
         listadoCadetes.Add(cadete);
     }
-    public void borrarCadetePorId(int idCadete){
+    public void BorrarCadetePorId(int idCadete){
         Cadete? cadeteEncontrado= null;
         foreach (var cadete in listadoCadetes)
         {
@@ -44,14 +44,14 @@ public class Cadeteria
             listadoCadetes.Remove(cadeteEncontrado);
         }
     }
-    public void mostrarCadete(){
+    public void MostrarCadete(){
         Console.WriteLine("-------Lista de cadetes-------");
         foreach (var cadete in listadoCadetes)
         {
             Console.WriteLine($"ID:{cadete.Id}, Nombre: {cadete.Nombre}");
         }
     }
-    public void generarInforme(){
+    public void GenerarInforme(){
         foreach (var cadete in listadoCadetes)
         {
             Console.WriteLine($"Cadete: {cadete.Nombre}, Pedido Entregados: {cadete.ListaPedido.Count}, Jornel: {cadete.jornalACobrar()}");
