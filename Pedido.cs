@@ -39,4 +39,30 @@ namespace EspacioCadeteria
             System.Console.WriteLine($"Numero: {NumeroPedido}");
             System.Console.WriteLine($"Observacion: {Observaciones}");
             System.Console.WriteLine($"Nombre: {Cliente.Nombre}");
-            System.Console.WriteLine($"Estado: {EstadoPedido
+            System.Console.WriteLine($"Estado: {EstadoPedido}");
+
+            if (CadeteAsignado != null)
+            {
+                System.Console.WriteLine($"Cadete Asignado: {CadeteAsignado.Nombre}");
+            }
+            else
+            {
+                System.Console.WriteLine("Cadete Asignado: Ninguno");
+            }
+        }
+
+        public void VerDireccionCliente()
+        {
+            Console.WriteLine($"La direccion del cliente es: {Cliente.Direccion}");
+        }
+
+        public void VerDatosCliente()
+        {
+            Console.WriteLine("\nDatos del cliente: ");
+            Console.WriteLine($"Nombre: {Cliente.Nombre}");
+            Console.WriteLine($"Dirección: {Cliente.Direccion}");
+            Console.WriteLine($"Teléfono: {Cliente.Telefono}");
+            Console.WriteLine($"Referencia de dirección: {Cliente.DatosReferenciaDireccion}");
+        }
+    }
+}
