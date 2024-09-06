@@ -16,6 +16,14 @@ namespace EspacioCadeteria
                 {
                     string jsonString = File.ReadAllText(ruta);
                     cadetes = JsonSerializer.Deserialize<List<Cadete>>(jsonString);
+                    
+                    // Verificar si la deserialización fue exitosa
+                    if (cadetes == null)
+                    {
+                        Console.WriteLine("Error al deserializar los cadetes desde JSON.");
+                        return null;
+                    }
+
                     Console.WriteLine("Carga exitosa de cadetes desde JSON.");
                 }
                 catch (Exception e)
@@ -46,7 +54,15 @@ namespace EspacioCadeteria
                 {
                     string jsonString = File.ReadAllText(ruta);
                     Cadeteria cadeteria = JsonSerializer.Deserialize<Cadeteria>(jsonString);
-                    cadeteria.Cadetes = cadetes; // Asegúrate de asignar la lista de cadetes cargados
+
+                    // Verificar si la deserialización fue exitosa
+                    if (cadeteria == null)
+                    {
+                        Console.WriteLine("Error al deserializar la cadeteria desde JSON.");
+                        return null;
+                    }
+
+                    cadeteria.Cadetes = cadetes; // Asigna la lista de cadetes cargados
                     Console.WriteLine("Carga exitosa de cadeteria desde JSON.");
                     return cadeteria;
                 }
@@ -61,8 +77,6 @@ namespace EspacioCadeteria
                 Console.WriteLine("No existe el archivo de cadeteria JSON.");
                 return null;
             }
-
-            return null;
         }
     }
 }
