@@ -1,117 +1,208 @@
-
+using System;
+using System.Collections.Generic;
 using System.Linq;
+
 namespace EspacioCadeteria
 {
     public class Cadeteria
     {
         private string nombre;
         private string telefono;
-        private List<Cadete> cadetes;
+        private List<Pedido> listadoPedidos = new List<Pedido>();
 
-        public Cadeteria(string nombre, string telefono, List<Cadete> Cadetes)
+        public Cadeteria(string nombre, string telefono)
         {
             this.nombre = nombre;
             this.telefono = telefono;
-            this.cadetes = Cadetes;
         }
 
         public string Nombre { get => nombre; set => nombre = value; }
         public string Telefono { get => telefono; set => telefono = value; }
-        public List<Cadete> Cadetes { get => cadetes; set => cadetes = value; }
+        public List<Pedido> ListadoPedidos { get => listadoPedidos; set => listadoPedidos = value; }
 
         public Pedido DarDeAltaPedido(string nro, string obs, string nombre_Cli, string direccion_Cli, string telefono_Cli, string datosRefDireccion_Cli, Estado estado)
         {
-            Pedido Pedido = new Pedido(nro, obs, nombre_Cli, direccion_Cli, telefono_Cli, datosRefDireccion_Cli, estado);
-            return Pedido;
+            Pedido pedido = new Pedido(nro, obs, nombre_Cli, direccion_Cli, telefono_Cli, datosRefDireccion_Cli, estado);
+            listadoPedidos.Add(pedido);
+            return pedido;
         }
 
-        public Cadete CadeteConMenosPedidos(List<Cadete> Cadetes)
+        public Cadete CadeteConMenosPedidos()
         {
-            Cadete cadeteConMenosPedidos = Cadetes.MinBy(cadete => cadete.Pedidos.Count);
-            if (cadeteConMenosPedidos != null)
+            if (listadoPedidos == null || listadoPedidos.Count == 0)
             {
-                Console.WriteLine($"El cadete con menos pedidos es {cadeteConMenosPedidos.Nombre} con {cadeteConMenosPedidos.Pedidos.Count} pedidos.");
+                Console.WriteLine("No hay pedidos disponibles.");
+                return null;
+            }
+
+            Dictionary<Cadete, int> cadetePedidoCount = new Dictionary<Cadete, int>();
+
+            foreach (var pedido in listadoPedidos)
+            {
+                var cadete = pedido.CadeteAsignado;
+                if (cadete != null)
+                {
+                    if (!cadetePedidoCount.ContainsKey(cadete))
+                    {
+                        cadetePedidoCount[cadete] = 0;
+                    }
+                    cadetePedidoCount[cadete]++;
+                }
+            }
+
+            if (cadetePedidoCount.Count == 0)
+            {
+                Console.WriteLine("No hay cadetes asignados a los pedidos.");
+                return null;
+            }
+
+            Cadete cadeteConMenosPedidos = cadetePedidoCount.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+
+            Console.WriteLine($"El cadete con menos pedidos es {cadeteConMenosPedidos.Nombre} con {cadetePedidoCount[cadeteConMenosPedidos]} pedidos.");
+
+            return cadeteConMenosPedidos;
+        }
+
+        public Cadete AsignarPedidoCadete(Pedido pedido, List<Cadete> cadetes)
+        {
+            if (cadetes == null || cadetes.Count == 0)
+            {
+                Console.WriteLine("No hay cadetes disponibles.");
+                return null;
+            }
+
+            if (listadoPedidos == null)
+            {
+                listadoPedidos = new List<Pedido>();
+            }
+
+            pedido.EstadoPedido = Estado.Enviado;
+            Cadete cadete = CadeteConMenosPedidos();
+
+            if (cadete != null)
+            {
+                pedido.CadeteAsignado = cadete;
+                Console.WriteLine($"Pedido asignado a {cadete.Nombre}");
+            }
+
+            return cadete;
+        }
+
+        public double JornalACobrar(string idCadete, List<Cadete> cadetes)
+        {
+            Cadete cadete = cadetes.FirstOrDefault(c => c.Id == idCadete);
+            if (cadete == null)
+            {
+                Console.WriteLine("Cadete no encontrado.");
+                return 0;
+            }
+
+            var pedidosAsignados = listadoPedidos.Where(p => p.CadeteAsignado == cadete).ToList();
+            double jornal = pedidosAsignados.Count * 100; // Ejemplo: 100 unidades monetarias por pedido
+            return jornal;
+        }
+
+        public void MostrarCadeteria()
+        {
+            Console.WriteLine("\n\nDatos de cadeteria:");
+            Console.WriteLine($"Nombre: {nombre}");
+            Console.WriteLine($"Teléfono: {telefono}");
+            Console.WriteLine("Lista de pedidos:");
+            foreach (var pedido in listadoPedidos)
+            {
+                Console.WriteLine($"Pedido {pedido.NumeroPedido}, Estado: {pedido.EstadoPedido}, Cliente: {pedido.Cliente.Nombre}");
+            }
+        }
+
+        public Pedido BuscarPedidoPorNumero(string numeroPedido)
+        {
+            return listadoPedidos.FirstOrDefault(p => p.NumeroPedido == numeroPedido);
+        }
+
+        public Cadete AsignarCadeteAPedido(string idCadete, string numeroPedido, List<Cadete> cadetes)
+        {
+            Cadete cadete = cadetes.FirstOrDefault(c => c.Id == idCadete);
+            Pedido pedido = listadoPedidos.FirstOrDefault(p => p.NumeroPedido == numeroPedido);
+
+            if (cadete != null && pedido != null)
+            {
+                pedido.CadeteAsignado = cadete;
+                Console.WriteLine($"Pedido {numeroPedido} asignado al cadete {cadete.Nombre}.");
+                return cadete;
             }
             else
             {
-                Console.WriteLine("No hay cadetes disponibles.");
+                Console.WriteLine("Cadete o pedido no encontrado.");
+                return null;
             }
-            return cadeteConMenosPedidos;
         }
-        
-        public Cadete AsignarPedidoCadete(Pedido pedido, List<Cadete> cadetes)
+
+        public void CambioDeEstadoDePedido(string numeroPedido, Estado nuevoEstado)
         {
-            pedido.EstadoPedido = Estado.Enviado;
-            Cadete cadete = CadeteConMenosPedidos(cadetes);
-            cadete.Pedidos.Add(pedido);
-            return cadete;
-        }
-        
-
-
-
-        public double PagoDeCadete(Cadete cadete)
-        {
-            return cadete.Pedidos.Count * 500;
-        }
-
-        public void MostrarCadeteria(){
-            System.Console.WriteLine("\n\nDatos de cadeteria:");
-            System.Console.WriteLine("Nombre: "+Nombre);
-            System.Console.WriteLine("Telefono: "+telefono);
-            System.Console.WriteLine("Lista de cadetes: ");
-            foreach (var cadete in cadetes)
+            Pedido pedido = listadoPedidos.FirstOrDefault(p => p.NumeroPedido == numeroPedido);
+            if (pedido != null)
             {
-                cadete.MostrarCadete();
+                pedido.EstadoPedido = nuevoEstado;
+                Console.WriteLine($"Estado del pedido {numeroPedido} cambiado a {nuevoEstado}.");
+            }
+            else
+            {
+                Console.WriteLine("Pedido no encontrado.");
             }
         }
 
-    public Pedido cambioDeEstadoDePedido(Pedido pedido){
-    bool continuar = true;
-    do
-    {   
-        System.Console.WriteLine("\nEstado actual del pedido?");
-        Console.WriteLine("1. Entregado");
-        Console.WriteLine("2. Enviado");
-        Console.WriteLine("3. Rechazado");
-        Console.WriteLine("4. Pendiente");
-        Console.WriteLine("5. Salir");
-        Console.Write("Seleccione estado: ");
-
-        int opcion = Convert.ToInt32(Console.ReadLine());
-
-        switch (opcion)
+        public void EliminarPedido(Pedido pedido)
         {
-            case 1:
-                pedido.EstadoPedido = Estado.Entregado;
-                Console.WriteLine("Estado cambiado a Entregado.");
-                break;
-            case 2:
-                pedido.EstadoPedido= Estado.Enviado;
-                Console.WriteLine("Estado cambiado a Enviado.");
-                break;
-            case 3:
-                pedido.EstadoPedido = Estado.Rechazado;
-                Console.WriteLine("Estado cambiado a Rechazado.");
-                break;
-            case 4:
-                pedido.EstadoPedido = Estado.Pendiente;
-                Console.WriteLine("Estado cambiado a Pendiente.");
-                break;
-            case 5:
-                continuar = false;
-                Console.WriteLine("Saliendo del cambio de estado.");
-                break;
-            default:
-                Console.WriteLine("Opción inválida. Por favor, intente de nuevo.");
-                break;
+            if (listadoPedidos.Remove(pedido))
+            {
+                Console.WriteLine($"Pedido {pedido.NumeroPedido} y su cliente {pedido.Cliente.Nombre} eliminados.");
+            }
+            else
+            {
+                Console.WriteLine("Pedido no encontrado.");
+            }
         }
 
-    } while (continuar);
+        public void ReasignarPedido(Pedido pedido, List<Cadete> cadetes)
+        {
+            if (pedido.CadeteAsignado != null)
+            {
+                pedido.CadeteAsignado = null;
+            }
 
-    return pedido;
-          
+            Cadete nuevoCadete = AsignarPedidoCadete(pedido, cadetes);
+            if (nuevoCadete != null)
+            {
+                Console.WriteLine($"Pedido reasignado a {nuevoCadete.Nombre}");
+            }
+            else
+            {
+                Console.WriteLine("No hay cadetes disponibles para reasignar el pedido.");
+            }
         }
 
-  }
+        public void MostrarCadete(string idCadete, List<Cadete> cadetes)
+        {
+            Cadete cadete = cadetes.FirstOrDefault(c => c.Id == idCadete);
+            if (cadete != null)
+            {
+                Console.WriteLine($"ID: {cadete.Id}");
+                Console.WriteLine($"Nombre: {cadete.Nombre}");
+
+                double jornal = JornalACobrar(idCadete, cadetes);
+                Console.WriteLine($"Jornal a Cobrar: {jornal}");
+
+                var pedidosAsignados = listadoPedidos.Where(p => p.CadeteAsignado == cadete).ToList();
+                Console.WriteLine($"Pedidos Asignados:");
+                foreach (var pedido in pedidosAsignados)
+                {
+                    Console.WriteLine($"- Número: {pedido.NumeroPedido}, Estado: {pedido.EstadoPedido}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Cadete no encontrado.");
+            }
+        }
+    }
 }

@@ -1,0 +1,39 @@
+{
+    "NombreCadeteria": "Cadetería Rápida",
+    "Direccion": "Calle Principal 123",
+    "Telefono": "555-1234",
+    "Cadetes": [
+        {
+            "Id": 1,
+            "Nombre": "Juan Perez",
+            "Telefono": "123456789",
+            "Direccion": "Av. Siempreviva 742"
+        },
+        {
+            "Id": 2,
+            "Nombre": "Ana Gomez",
+            "Telefono": "987654321",
+            "Direccion": "Calle Falsa 123"
+        }
+    ],
+    "Pedidos": [
+        {
+            "NumeroPedido": "1",
+            "Observaciones": "Sin observaciones",
+            "NombreCliente": "Juan Perez",
+            "DireccionCliente": "Av. Siempreviva 742",
+            "TelefonoCliente": "123456789",
+            "DatosReferencia": "Referencias de dirección",
+            "EstadoPedido": "Enviado"
+        },
+        {
+            "NumeroPedido": "2",
+            "Observaciones": "Entregar antes de las 5pm",
+            "NombreCliente": "Ana Gomez",
+            "DireccionCliente": "Calle Falsa 123",
+            "TelefonoCliente": "987654321",
+            "DatosReferencia": "Cerca de la plaza",
+            "EstadoPedido": "Entregado"
+        }
+    ]
+}
