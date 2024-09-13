@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-static void Main(string[] args)
-{
     try
     {
         AccesoCSV accesoCSV = new AccesoCSV();
@@ -61,7 +59,6 @@ static void Main(string[] args)
     {
         Console.WriteLine($"Se ha producido un error: {ex.Message}");
     }
-}
 
 static void DarDeAltaPedido(Cadeteria cadeteria, AccesoCSV accesoCSV)
 {
@@ -86,10 +83,10 @@ static void DarDeAltaPedido(Cadeteria cadeteria, AccesoCSV accesoCSV)
 
     Pedido nuevoPedido = cadeteria.DarDeAltaPedido(nro, obs, nombre, direccion, telefono, datosRef, Estado.Pendiente);
     Console.WriteLine("Pedido creado con éxito.");
-
+    List<Pedido>pedidosNuevos= new List<Pedido>();
+    pedidosNuevos.Add(nuevoPedido);
     // Guardar los cambios en los archivos
-    accesoCSV.GuardarCadetes(cadeteria.Cadetes);
-    accesoCSV.GuardarPedidos(cadeteria.Pedidos);
+    accesoCSV.GuardarPedidos(pedidosNuevos);
 }
 
 static void AsignarPedidoCadete(Cadeteria cadeteria, AccesoCSV accesoCSV)
@@ -105,15 +102,13 @@ static void AsignarPedidoCadete(Cadeteria cadeteria, AccesoCSV accesoCSV)
         Console.WriteLine("Pedido no encontrado.");
         return;
     }
-
+    List<Cadete> cadetes= accesoCSV.CargarCadetes();
     // Asignar el pedido al cadete
-    Cadete cadete = cadeteria.AsignarPedidoCadete(pedido);
+    Cadete cadete = cadeteria.AsignarPedidoCadete(pedido,cadetes);
     if (cadete != null)
     {
         Console.WriteLine($"Pedido asignado al cadete {cadete.Nombre}.");
         // Guardar los cambios en los archivos
-        accesoCSV.GuardarCadetes(cadeteria.Cadetes);
-        accesoCSV.GuardarPedidos(cadeteria.Pedidos);
     }
     else
     {
@@ -125,22 +120,18 @@ static void CambiarEstadoPedido(Cadeteria cadeteria, AccesoCSV accesoCSV)
 {
     Console.Write("Número del pedido para cambiar el estado: ");
     string nroPedido = Console.ReadLine();
-
     // Buscar el pedido en todos los cadetes
-    Pedido pedido = cadeteria.Pedidos.FirstOrDefault(p => p.NumeroPedido == nroPedido);
-    if (pedido != null)
-    {
-        cadeteria.CambioDeEstadoDePedido(pedido);
-        Console.WriteLine("Estado del pedido cambiado con éxito.");
+    Pedido pedido = cadeteria.ListadoPedidos.FirstOrDefault(p => p.NumeroPedido == nroPedido);
+    //validar 
+    Console.WriteLine("Ingrese el estado del pedido\n");
+    //Console.ReadLine(); a int 
+    var estado= (Estado)1;
+    
+    if (pedido == null) Console.WriteLine("Pedido no encontrado.");
+    
+    cadeteria.CambioDeEstadoDePedido(pedido.NumeroPedido, estado); 
+    Console.WriteLine("Estado del pedido cambiado con éxito.");
 
-        // Guardar los cambios en los archivos
-        accesoCSV.GuardarCadetes(cadeteria.Cadetes);
-        accesoCSV.GuardarPedidos(cadeteria.Pedidos);
-    }
-    else
-    {
-        Console.WriteLine("Pedido no encontrado.");
-    }
 }
 
 static void ReasignarPedido(Cadeteria cadeteria, AccesoCSV accesoCSV)
